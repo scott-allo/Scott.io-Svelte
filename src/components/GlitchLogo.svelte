@@ -1,10 +1,7 @@
-import React from 'react';
-import '../styles/GlitchLogo.scss';
+<script>
+  import '../styles/GlitchLogo.scss';
+</script>
 
-const GlitchLogo = () => (
-  <div className="logo-container">
-    <span className="metal-text-logo">IC€PEAK</span>
-  </div>
-);
-
-export default GlitchLogo;
+<div class="logo-container">
+  <span class="metal-text-logo">IC€PEAK</span>
+</div>
