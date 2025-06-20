@@ -1,38 +1,36 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/Navigation.scss';
+<script>
+  import { writable } from 'svelte/store';
+  import '../styles/Navigation.scss';
 
-const Navigation = () => {
-  const [activeLink, setActiveLink] = useState('');
+  // Liste des liens
+  const links = ['INSTAGRAM', 'TELEGRAM', 'YOUTUBE', 'CONTACT'];
 
-  const handleMouseEnter = (link) => {
-    setActiveLink(link);
-  };
+  // État local pour le lien actif
+  let activeLink = '';
 
-  const handleMouseLeave = () => {
-    setActiveLink('');
-  };
+  function handleMouseEnter(link) {
+    activeLink = link;
+  }
 
-  return (
-    <nav className="cyber-nav">
-      <div className="nav-glitch-container">
-        {['INSTAGRAM', 'TELEGRAM', 'YOUTUBE', 'CONTACT'].map((link) => (
-          <Link
-            key={link}
-            to={`/${link.toLowerCase()}`}
-            className={`nav-link ${activeLink === link ? 'active' : ''}`}
-            onMouseEnter={() => handleMouseEnter(link)}
-            onMouseLeave={handleMouseLeave}
-            data-text={link}
-          >
-            {link}
-            <div className="glitch-effect"></div>
-          </Link>
-        ))}
-      </div>
-      <div className="nav-scanner"></div>
-    </nav>
-  );
-};
+  function handleMouseLeave() {
+    activeLink = '';
+  }
+</script>
 
-export default Navigation; 
+<nav class="cyber-nav">
+  <div class="nav-glitch-container">
+    {#each links as link}
+      <a
+        href="/{link.toLowerCase()}"
+        class="nav-link {activeLink === link ? 'active' : ''}"
+        on:mouseenter={() => handleMouseEnter(link)}
+        on:mouseleave={handleMouseLeave}
+        data-text={link}
+      >
+        {link}
+        <div class="glitch-effect"></div>
+      </a>
+    {/each}
+  </div>
+  <div class="nav-scanner"></div>
+</nav> 
