@@ -1,12 +1,7 @@
-import React from 'react';
-import '../styles/noise.scss';
+<script>
+  import '../styles/noise.scss';
+</script>
 
-const NoiseOverlay = () => {
-  return (
-    <div className="noise-overlay">
-      <div className="noise"></div>
-    </div>
-  );
-};
-
-export default NoiseOverlay; 
+<div class="noise-overlay">
+  <div class="noise"></div>
+</div> 
