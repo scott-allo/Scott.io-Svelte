@@ -1,12 +1,9 @@
-import { useEffect, useRef } from 'react';
+<script>
+  export let text = '';
+  export let fontSize = '2rem';
+  export let className = '';
+</script>
 
-export default function GlitchText({ text, fontSize = '2rem', className = '' }) {
-  const textRef = useRef();
-
-  return (
-    <div className={`glitch-text-container ${className}`} style={{ fontSize }}>
-      <div ref={textRef} className="glitch-text-original">{text}</div>
-      {/* Suppression des clones pour améliorer les performances */}
-    </div>
-  );
-} 
+<div class={`glitch-text-container ${className}`} style="font-size: {fontSize};">
+  <div class="glitch-text-original">{text}</div>
+</div>

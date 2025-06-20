@@ -1,5 +1,5 @@
 <script>
-  import { onMount, tick } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import GlitchText from '../components/GlitchText.svelte';
   import DistortionEffect from '../components/DistortionEffect.svelte';
   import { gsap } from 'gsap';
@@ -8,6 +8,10 @@
 
   let linksRef = [];
   let isReady = false;
+
+  function setLinkRef(el, i) {
+    linksRef[i] = el;
+  }
 
   // Initialisation des refs après le rendu
   onMount(async () => {
@@ -113,7 +117,7 @@
     <div class="links-container">
       {#each mainLinks as link, i}
         <div
-          bind:this={el => linksRef[i] = el}
+          bind:this={linksRef[i]}
           class="glitch-link"
           on:mouseenter={() => handleMouseEnter(i)}
           on:mouseleave={() => handleMouseLeave(i)}

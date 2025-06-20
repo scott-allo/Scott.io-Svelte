@@ -345,4 +345,15 @@ body {
   .noise-bg {
     opacity: 0.05; // Encore moins sur mobile
   }
+}
+
+.glitch-text-container {
+  position: relative;
+  display: inline-block;
+}
+.glitch-text-original {
+  /* Effet de base, à personnaliser */
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 2px;
 } 
