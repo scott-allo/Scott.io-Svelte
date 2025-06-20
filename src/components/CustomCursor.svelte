@@ -1,24 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import '../styles/CustomCursor.scss';
+<script>
+  import { onMount, onDestroy } from 'svelte';
+  import '../styles/CustomCursor.scss';
 
-const CustomCursor = () => {
-  const cursorRef = useRef(null);
+  let cursorRef;
 
-  useEffect(() => {
-    const moveCursor = (e) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-      }
-    };
+  function moveCursor(e) {
+    if (cursorRef) {
+      cursorRef.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    }
+  }
+
+  onMount(() => {
     document.addEventListener('mousemove', moveCursor);
-    return () => {
-      document.removeEventListener('mousemove', moveCursor);
-    };
-  }, []);
+  });
 
-  return (
-    <div className="custom-cursor" ref={cursorRef} />
-  );
-};
+  onDestroy(() => {
+    document.removeEventListener('mousemove', moveCursor);
+  });
+</script>
 
-export default CustomCursor; 
+<div class="custom-cursor" bind:this={cursorRef}></div>
