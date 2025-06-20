@@ -1,104 +1,102 @@
-import { useState, useRef, useEffect } from 'react';
+<script>
+  import { onMount } from 'svelte';
+  import '../styles/Terminal.scss';
 
-function Terminal({ onSkillsCommand }) {
-  const [commands, setCommands] = useState([
+  export let onSkillsCommand = null;
+
+  let commands = [
     { text: "> SYSTEM INITIALIZED", type: "system" },
     { text: "> WELCOME TO IC3PEAK_", type: "system" },
     { text: "> Type 'help' for available commands", type: "system" }
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const inputRef = useRef(null);
-  const outputRef = useRef(null);
+  ];
+  let inputValue = '';
+  let inputRef;
+  let outputRef;
 
   const availableCommands = {
     help: "Available commands: help, clear, about, music, videos, skills",
-    clear: () => setCommands([]),
+    clear: () => { commands = []; },
     about: "IC3PEAK is a Russian electronic music duo known for their dark and experimental sound.",
     music: "Redirecting to music section...",
     videos: "Redirecting to videos section..."
   };
 
-  const handleCommand = (cmd) => {
+  function handleCommand(cmd) {
     const command = cmd.toLowerCase().trim();
-    
     if (command === '') return;
 
-    setCommands(prev => [...prev, { text: `> ${cmd}`, type: "user" }]);
+    commands = [...commands, { text: `> ${cmd}`, type: "user" }];
 
     if (command === 'skills') {
       if (onSkillsCommand) onSkillsCommand();
-      setCommands(prev => [...prev, { text: "Compétences techniques :", type: "system" }]);
+      commands = [...commands, { text: "Compétences techniques :", type: "system" }];
       return;
     } else {
       if (onSkillsCommand) onSkillsCommand(false);
     }
 
     if (command in availableCommands) {
-      const response = typeof availableCommands[command] === 'function' 
-        ? availableCommands[command]() 
+      const response = typeof availableCommands[command] === 'function'
+        ? availableCommands[command]()
         : availableCommands[command];
-      
+
       if (response) {
-        setCommands(prev => [...prev, { text: response, type: "system" }]);
+        commands = [...commands, { text: response, type: "system" }];
       }
     } else {
-      setCommands(prev => [...prev, { 
-        text: "Command not found. Type 'help' for available commands", 
-        type: "error" 
-      }]);
+      commands = [...commands, {
+        text: "Command not found. Type 'help' for available commands",
+        type: "error"
+      }];
     }
-  };
+  }
 
-  const addCommand = (e) => {
+  function addCommand(e) {
     if (e.key === 'Enter') {
       handleCommand(inputValue);
-      setInputValue('');
+      inputValue = '';
     }
-  };
+  }
 
-  useEffect(() => {
-    if (outputRef.current) {
-      outputRef.current.scrollTop = outputRef.current.scrollHeight;
+  // Scroll to bottom on new command (réaction Svelte)
+  $: {
+    if (outputRef) {
+      outputRef.scrollTop = outputRef.scrollHeight;
     }
-  }, [commands]);
+  }
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+  // Focus input on mount
+  onMount(() => {
+    if (inputRef) {
+      inputRef.focus();
     }
-  }, []);
+  });
+</script>
 
-  return (
-    <div className="terminal">
-      <div className="terminal-header">
-        <div className="terminal-controls">
-          <span className="control close"></span>
-          <span className="control minimize"></span>
-          <span className="control maximize"></span>
-        </div>
-        <div className="terminal-title">IC3PEAK_TERMINAL</div>
-      </div>
-      <div className="terminal-output" ref={outputRef}>
-        {commands.map((cmd, i) => (
-          <div key={i} className={`terminal-line ${cmd.type}`}>
-            {cmd.text}
-          </div>
-        ))}
-      </div>
-      <div className="terminal-input-container">
-        <span className="prompt">$</span>
-        <input 
-          ref={inputRef}
-          type="text" 
-          className="terminal-input"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={addCommand}
-          placeholder="Enter command..."
-        />
-      </div>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="terminal-controls">
+      <span class="control close"></span>
+      <span class="control minimize"></span>
+      <span class="control maximize"></span>
     </div>
-  );
-}
-
-export default Terminal; 
+    <div class="terminal-title">IC3PEAK_TERMINAL</div>
+  </div>
+  <div class="terminal-output" bind:this={outputRef}>
+    {#each commands as cmd, i}
+      <div class={`terminal-line ${cmd.type}`}>{cmd.text}</div>
+    {/each}
+  </div>
+  <div class="terminal-input-container">
+    <span class="prompt">$</span>
+    <input
+      bind:this={inputRef}
+      type="text"
+      class="terminal-input"
+      bind:value={inputValue}
+      on:keypress={addCommand}
+      placeholder="Enter command..."
+      autocomplete="off"
+    />
+  </div>
+</div> 
