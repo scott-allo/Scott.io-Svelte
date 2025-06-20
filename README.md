@@ -1,1 +1,1 @@
-# Scott.io
+# Scott.io Svelte version
