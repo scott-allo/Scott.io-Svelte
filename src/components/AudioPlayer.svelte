@@ -1,38 +1,45 @@
-import { useEffect, useRef } from 'react';
-import { Howl } from 'howler';
+<script>
+  import { onMount, onDestroy } from 'svelte';
+  import { Howl } from 'howler';
 
-export default function AudioPlayer({ enabled }) {
-  const soundRef = useRef(null);
+  export let enabled = false;
 
-  useEffect(() => {
-    if (enabled && !soundRef.current) {
-      soundRef.current = new Howl({
+  let sound = null;
+  let handleFirstInteraction;
+
+  onMount(() => {
+    if (enabled && !sound) {
+      sound = new Howl({
         src: ['/assets/audio/ambient.mp3'],
         loop: true,
         volume: 0.3,
         onplayerror: function() {
-          soundRef.current.once('unlock', function() {
-            soundRef.current.play();
+          sound.once('unlock', function() {
+            sound.play();
           });
         }
       });
-      
+
       // Démarrage avec interaction utilisateur
-      const handleFirstInteraction = () => {
-        soundRef.current.play();
+      handleFirstInteraction = () => {
+        sound.play();
         document.removeEventListener('click', handleFirstInteraction);
       };
-      
+
       document.addEventListener('click', handleFirstInteraction);
     }
+  });
 
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.stop();
-        soundRef.current = null;
-      }
-    };
-  }, [enabled]);
+  $: if (!enabled && sound) {
+    sound.stop();
+    sound = null;
+  }
 
-  return null;
-} 
+  onDestroy(() => {
+    if (sound) {
+      sound.stop();
+      sound = null;
+    }
+    document.removeEventListener('click', handleFirstInteraction);
+  });
+</script>
